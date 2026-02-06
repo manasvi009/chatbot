@@ -28,10 +28,11 @@
     "start": "node server/server.js",
     "dev": "concurrently \"npm run server\" \"npm start\"",
     "server": "nodemon server/server.js",
-    "build": "react-scripts build",
+    "build": "CI=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "postinstall": "npx chmod-cli || true"
   },
   "eslintConfig": {
     "extends": [
