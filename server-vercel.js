@@ -16,11 +16,14 @@ const ticketRoutes = require('./routes/tickets');
 const adminRoutes = require('./routes/admin');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static assets from the build folder
+app.use(express.static(path.join(__dirname, '../build')));
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/chatbot', {
@@ -36,25 +39,16 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production' || process.env.REACT_APP_ENV === 'production') {
-  // Serve static files from the React build folder
-  app.use(express.static(path.join(__dirname, '../build')));
-
-  // Handle client-side routing
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../build', 'index.html'));
-  });
-} else {
-  // In development, serve static files from the React dev server
-  app.use(express.static(path.join(__dirname, '../public')));
-}
+// Catch-all route to serve the React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+});
 
 // Create HTTP server and attach Socket.IO
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: process.env.CLIENT_URL || '*',
     methods: ['GET', 'POST']
   }
 });

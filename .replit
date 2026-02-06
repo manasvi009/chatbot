@@ -1,0 +1,6 @@
+[run]
+cmd = ["npm", "start"]
+persistentOutput = true
+
+[build]
+before = ["cd server && npm install", "npm install", "npm run build"]
