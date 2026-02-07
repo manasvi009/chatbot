@@ -1,0 +1,32 @@
+{
+  "name": "chatbot",
+  "version": 2,
+  "public": true,
+  "github": {
+    "enabled": true,
+    "autoJobCancelation": true
+  },
+  "builds": [
+    {
+      "src": "server/vercel-server.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["server/**", "src/**", "public/**", "build/**"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/vercel-server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/server/vercel-server.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "VERCEL": "1"
+  }
+}
